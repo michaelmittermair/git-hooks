@@ -8,17 +8,21 @@ if [ $2 -eq merge ]; then
     exit
 fi
 
+# getting the issue-key which has the format DEV-0000 (0000 indicates the issuenumber)
 ISSUE_KEY=`git rev-parse --abbrev-ref HEAD | sed -e 's/.*\(DEV-[0-9]*\).*/\1/'`
+
+# getting the current branchname
 BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
 
 if [ $? -ne 0 ]; then
     # no issue key in branch, use the default message
     exit
 fi
-# issue key matched from branch prefix, prepend to commit message
 
+# issue key matched from branch prefix, prepend to commit message
+# checking if there is really a issuekey found or the whole branchname returned
 if [ $ISSUE_KEY = $BRANCH_NAME ]; then
-	# nothing to do
+	# the branchname returned >>  no issue key >> using the original message
 	exit
 else
 	originalmessage=`cat $1`
